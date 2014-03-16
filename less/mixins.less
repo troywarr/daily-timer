@@ -1,0 +1,15 @@
+// see: http://www.m6tt.com/2011/09/22/a-less-approach-to-clearfix
+.clear-fix() { 
+  zoom: 1;
+
+  &:before {
+    content: '';
+    display: block;
+  }
+
+  &:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
