@@ -43,7 +43,7 @@ tasks = [
   {
     name: 'Mass Relevance'
     time:
-      end: 8 * config.hour
+      end: 5 * config.hour + 45 * config.minute
   }
   {
     name: 'Exercise (Cardio)'
@@ -55,11 +55,11 @@ tasks = [
     time:
       end: 1 * config.hour
   }
-  {
-    name: 'Sell Items'
-    time:
-      end: 2 * config.hour
-  }
+  # {
+  #   name: 'Sell Items'
+  #   time:
+  #     end: 2 * config.hour
+  # }
   {
     name: 'Sneeze'
     time:
@@ -158,7 +158,7 @@ class Timer
 
   #
   constructor: (@$container, @bar, @time, @doneCallback) ->
-    @speed = 50
+    @speed = 100
     @finished = false
 
   #
@@ -179,6 +179,7 @@ class Timer
     output
 
   #
+  # see: http://www.sitepoint.com/creating-accurate-timers-in-javascript/
   _update: =>
     real = @counter * @speed
     @time.elapsed.current = new Date().getTime() - @time.start
@@ -247,11 +248,10 @@ class Bar
 
   #
   update: (percentage) ->
-    @$innerBar.css 'width', "#{percentage * @outerBarWidth}px"
+    @$innerBar.css 'width', "#{percentage * 100}%"
 
   #
   init: ->
-    @outerBarWidth = @$container.width()
     @_getShortcuts()
 
 

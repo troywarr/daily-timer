@@ -1,0 +1,3 @@
+ensure that when we're finished, total time doesn't exceed end time
+  bar doesn't exceed 100% width
+  timer doesn't display time past end time
