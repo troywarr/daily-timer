@@ -142,6 +142,10 @@ h1 {
 .task .bar {
   clear: left;
 }
+.task.done {
+  opacity: 0.25;
+  cursor: auto;
+}
 .task.running {
   background-color: #ddd;
 }
@@ -181,6 +185,9 @@ h1 {
   height: 40px;
   position: relative;
 }
+.running .bar.outer {
+  background-color: #fff;
+}
 .bar.inner {
   background-color: #999;
   position: absolute;
@@ -188,7 +195,4 @@ h1 {
   top: 0;
   width: 0;
   height: 100%;
-}
-.running .bar {
-  background-color: #fff;
 }

@@ -60,6 +60,11 @@ tasks = [
     time:
       end: 2 * config.hour
   }
+  {
+    name: 'Sneeze'
+    time:
+      end: 3 * config.second
+  }
 ]
 
 
@@ -74,10 +79,9 @@ class TaskList
   #
   _insertTasks: ->
     for taskData in @tasks
-      task = new Task taskData
+      task = new Task @$container, taskData
       task.init()
       @taskList.push task
-      @$container.append task.$container
 
   #
   init: ->
@@ -89,7 +93,7 @@ class TaskList
 class Task
 
   #
-  constructor: (@taskData) ->
+  constructor: (@$parentContainer, @taskData) ->
     @taskTmpl = $('#template_task').html()
     @running = false
 
@@ -101,6 +105,7 @@ class Task
   #
   _render: ->
     @$container = $ _.template @taskTmpl, @taskData
+    @$parentContainer.append @$container
 
   #
   _initBar: ->
@@ -109,7 +114,7 @@ class Task
 
   #
   _initTimer: ->
-    @timer = new Timer @$time, @bar, @taskData.time
+    @timer = new Timer @$time, @bar, @taskData.time, @done
     @timer.init()
 
   #
@@ -133,6 +138,12 @@ class Task
         @_start()
 
   #
+  done: =>
+    @_stop()
+    @$container.off 'click'
+    @$container.addClass 'done'
+
+  #
   init: ->
     @_render()
     @_getShortcuts()
@@ -146,8 +157,9 @@ class Task
 class Timer
 
   #
-  constructor: (@$container, @bar, @time) ->
+  constructor: (@$container, @bar, @time, @doneCallback) ->
     @speed = 50
+    @finished = false
 
   #
   _getHumanTime: (time, showMS = false) ->
@@ -167,13 +179,17 @@ class Timer
     output
 
   #
-  _updateTime: =>
+  _update: =>
     real = @counter * @speed
     @time.elapsed.current = new Date().getTime() - @time.start
-    @counter++
-    @_updateDisplayTime()
-    diff = @time.elapsed.current - real
-    @timeout = setTimeout @_updateTime, @speed - diff
+    if @time.elapsed.total + @time.elapsed.current >= @time.end # if we've finished
+      @finished = true
+      @stop()
+      @doneCallback()
+    else # still going
+      @counter++
+      @_updateDisplay()
+      @timeout = setTimeout @_update, @speed - (@time.elapsed.current - real)
 
   #
   _initDisplayTime: ->
@@ -181,8 +197,10 @@ class Timer
     @$end.text @_getHumanTime @time.end
 
   #
-  _updateDisplayTime: ->
-    @$elapsed.text @_getHumanTime @time.elapsed.total + @time.elapsed.current
+  _updateDisplay: ->
+    runningTime = @time.elapsed.total + @time.elapsed.current
+    @$elapsed.text @_getHumanTime runningTime # update timer
+    @bar.update runningTime / @time.end # update bar
 
   #
   _getShortcuts: ->
@@ -197,15 +215,17 @@ class Timer
 
   #
   start: ->
-    @counter = 0
-    @time.start = new Date().getTime()
-    @timeout = setTimeout @_updateTime, @speed
+    if not @finished
+      @counter = 0
+      @time.start = new Date().getTime()
+      @timeout = setTimeout @_update, @speed
 
   #
   stop: ->
     clearTimeout @timeout
     @time.elapsed.total += @time.elapsed.current
     @time.elapsed.current = 0
+    @_updateDisplay()
 
   #
   init: ->
@@ -222,16 +242,25 @@ class Bar
   constructor: (@$container) ->
 
   #
-  update: ->
+  _getShortcuts: ->
+    @$innerBar = @$container.find '.bar.inner'
+
+  #
+  update: (percentage) ->
+    @$innerBar.css 'width', "#{percentage * @outerBarWidth}px"
 
   #
   init: ->
+    @outerBarWidth = @$container.width()
+    @_getShortcuts()
 
 
 
-# require templates
-utils.requireTemplate 'task'
+$ ->
 
-# init
-taskList = new TaskList $('.task-list'), tasks
-taskList.init()
+  # require templates
+  utils.requireTemplate 'task'
+
+  # init
+  taskList = new TaskList $('.task-list'), tasks
+  taskList.init()
