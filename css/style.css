@@ -143,7 +143,7 @@ h1 {
   clear: left;
 }
 .task.running {
-  background-color: #eee;
+  background-color: #ddd;
 }
 .info {
   display: table;
@@ -188,4 +188,7 @@ h1 {
   top: 0;
   width: 0;
   height: 100%;
+}
+.running .bar {
+  background-color: #fff;
 }

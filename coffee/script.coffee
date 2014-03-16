@@ -43,25 +43,21 @@ tasks = [
   {
     name: 'Mass Relevance'
     time:
-      elapsed: 0
       end: 8 * config.hour
   }
   {
     name: 'Exercise (Cardio)'
     time:
-      elapsed: 0
       end: 30 * config.minute
   }
   {
     name: 'Exercise (Strength Training)'
     time:
-      elapsed: 0
       end: 1 * config.hour
   }
   {
     name: 'Sell Items'
     time:
-      elapsed: 0
       end: 2 * config.hour
   }
 ]
@@ -151,6 +147,7 @@ class Timer
 
   #
   constructor: (@$container, @bar, @time) ->
+    @speed = 50
 
   #
   _getHumanTime: (time, showMS = false) ->
@@ -170,9 +167,22 @@ class Timer
     output
 
   #
-  _updateTime: ->
-    @$elapsed.text @_getHumanTime @time.elapsed
+  _updateTime: =>
+    real = @counter * @speed
+    @time.elapsed.current = new Date().getTime() - @time.start
+    @counter++
+    @_updateDisplayTime()
+    diff = @time.elapsed.current - real
+    @timeout = setTimeout @_updateTime, @speed - diff
+
+  #
+  _initDisplayTime: ->
+    @$elapsed.text @_getHumanTime @time.elapsed.total
     @$end.text @_getHumanTime @time.end
+
+  #
+  _updateDisplayTime: ->
+    @$elapsed.text @_getHumanTime @time.elapsed.total + @time.elapsed.current
 
   #
   _getShortcuts: ->
@@ -180,17 +190,28 @@ class Timer
     @$end = @$container.find '.end'
 
   #
+  _initTime: ->
+    @time.elapsed =
+      total: 0
+      current: 0
+
+  #
   start: ->
-    console.log 'start'
+    @counter = 0
+    @time.start = new Date().getTime()
+    @timeout = setTimeout @_updateTime, @speed
 
   #
   stop: ->
-    console.log 'stop'
+    clearTimeout @timeout
+    @time.elapsed.total += @time.elapsed.current
+    @time.elapsed.current = 0
 
   #
   init: ->
     @_getShortcuts()
-    @_updateTime()
+    @_initTime()
+    @_initDisplayTime()
 
 
 
