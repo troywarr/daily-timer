@@ -43,7 +43,7 @@ tasks = [
   {
     name: 'Mass Relevance'
     time:
-      end: 5 * config.hour + 45 * config.minute
+      end: 4 * config.hour
   }
   {
     name: 'Exercise (Cardio)'
@@ -60,11 +60,11 @@ tasks = [
   #   time:
   #     end: 2 * config.hour
   # }
-  {
-    name: 'Sneeze'
-    time:
-      end: 3 * config.second
-  }
+  # {
+  #   name: 'Sneeze'
+  #   time:
+  #     end: 3 * config.second
+  # }
 ]
 
 
