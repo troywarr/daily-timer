@@ -16,7 +16,7 @@ define [
 
     #
     _insertTasks: ->
-      loadedData = null # utils.load()
+      loadedData = utils.load()
       for taskData, i in loadedData ? @tasks
         task = new Task @$container, taskData, @
         task.init()
