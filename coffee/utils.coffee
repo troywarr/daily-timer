@@ -30,3 +30,11 @@ define [
         success: (data) ->
           template.string = data
       $('head').append "<script id=\"#{template.id}\" type=\"text/template\">#{template.string}</script>"
+
+  #
+  load: ->
+    JSON.parse localStorage.getItem 'dailyTimer'
+
+  #
+  save: (data) ->
+    localStorage.setItem 'dailyTimer', JSON.stringify data

@@ -9,7 +9,7 @@ define [
     {
       name: 'Mass Relevance'
       time:
-        end: 4 * config.hour
+        end: 8 * config.hour
     }
     {
       name: 'Exercise (Cardio)'
@@ -17,7 +17,7 @@ define [
         end: 30 * config.minute
     }
     {
-      name: 'Exercise (Strength Training)'
+      name: 'Exercise (Strength)'
       time:
         end: 1 * config.hour
     }

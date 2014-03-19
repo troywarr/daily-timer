@@ -15,7 +15,7 @@ define [
   class Task
 
     #
-    constructor: (@$parentContainer, @taskData) ->
+    constructor: (@$parentContainer, @taskData, @taskList) ->
       @taskTmpl = $('#template_task').html()
       @running = false
 
@@ -49,6 +49,7 @@ define [
     _stop: =>
       @$container.removeClass 'running'
       @timer.stop()
+      @taskList.save()
       @running = false
 
     #
@@ -58,6 +59,10 @@ define [
           @_stop()
         else
           @_start()
+
+    #
+    getData: ->
+      @taskData
 
     #
     done: =>

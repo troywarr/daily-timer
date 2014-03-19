@@ -46,7 +46,6 @@ define [
 
     #
     _initDisplayTime: ->
-      @$elapsed.text @_getHumanTime @time.elapsed.total
       @$end.text @_getHumanTime @time.end
 
     #
@@ -62,9 +61,14 @@ define [
 
     #
     _initTime: ->
-      @time.elapsed =
-        total: 0
-        current: 0
+      if @time.elapsed? # if time has already been counted (e.g., from saved data)
+        # save and reset current time (couldn't be saved before page was last unloaded)
+        @time.elapsed.total += @time.elapsed.current
+        @time.elapsed.current = 0
+      else # starting fresh
+        @time.elapsed =
+          total: 0
+          current: 0
 
     #
     start: ->
@@ -85,3 +89,4 @@ define [
       @_getShortcuts()
       @_initTime()
       @_initDisplayTime()
+      @_updateDisplay()
