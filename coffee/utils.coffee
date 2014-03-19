@@ -1,4 +1,8 @@
-define ->
+define [
+  'jquery'
+], (
+  $
+) ->
 
 
   # see: http://stackoverflow.com/a/10073764/167911

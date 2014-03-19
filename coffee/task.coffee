@@ -1,7 +1,11 @@
 define [
+  'jquery'
+  'underscore'
   './bar'
   './timer'
 ], (
+  $
+  _
   Bar
   Timer
 ) ->

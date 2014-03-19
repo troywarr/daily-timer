@@ -1,8 +1,10 @@
 define [
+  'jquery'
   './task-list'
   './utils'
   './tasks'
 ], (
+  $
   TaskList
   utils
   tasks
